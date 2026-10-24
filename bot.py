@@ -3,8 +3,11 @@ from telebot import types
 import json
 import os
 
-# Aap ka verified Bot Token
-TOKEN = "8964086702:AAFE3xvSZF2ONAN517tcmsxwYStdPd2SKcc"
+# Render ke environment variable se token secure tareeqay se uthayega
+TOKEN = os.environ.get("TOKEN")
+if not TOKEN:
+    raise ValueError("TOKEN environment variable set nahi ki gayi!")
+
 bot = telebot.TeleBot(TOKEN)
 
 CONFIG_FILE = "accounts_config.json"
@@ -93,7 +96,6 @@ def save_account_ip(message):
 def view_orders(message):
     orders = load_json(ORDERS_FILE)
     if not orders:
-        # Sample order agar list khali ho
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton("🗑️ Remove Order", callback_data="remove_sample"))
         bot.send_message(message.chat.id, "📦 **Sample Order:**\n\n👤 Customer: Ali Khan\n🔥 Product: Smart Watch\n💰 Price: 2500 PKR\n🚚 COD: Available", parse_mode="Markdown", reply_markup=markup)
